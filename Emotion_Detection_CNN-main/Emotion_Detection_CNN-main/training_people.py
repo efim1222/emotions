@@ -4,9 +4,9 @@ import cv2
 import numpy as np
 import datetime
 import os
-import random
 import time
 import subprocess
+import sys
 
 face_classifier = cv2.CascadeClassifier(
     r'C:\Emotion_Detection_CNN-main\Emotion_Detection_CNN-main\haarcascade_frontalface_default.xml')
@@ -15,19 +15,7 @@ classifier = load_model(r'C:\Emotion_Detection_CNN-main\Emotion_Detection_CNN-ma
 emotion_labels = ['Гнев', 'Отвращение', 'Страх', 'Радость', 'Нейтрально', 'Грусть', 'Удивление']
 list_of_emotions = []
 cap = cv2.VideoCapture(0)
-# path = r"C:\Emotion_Detection_CNN-main\Emotion_Detection_CNN-main\Emotions\Happy"
-# files=os.listdir(path)
-# d=random.choice(files)
-path1 = r"C:/Emotion_Detection_CNN-main/Emotion_Detection_CNN-main/Emotions/Happy/gettyimages-1314490179-612x612.jpg"
-# Open file with desired program
-prog = r'C:/Program Files/IrfanView/i_view64.exe'
-OpenIt = subprocess.Popen([prog, path1])
-
-# keep it open for 30 seconds
-time.sleep(3)
-
-# close the file and the program
-OpenIt.terminate()
+list_of_predictions = []
 while True:
     _, frame = cap.read()
     labels = []
@@ -45,7 +33,8 @@ while True:
             roi = np.expand_dims(roi, axis=0)
             # Предсказание (0 - 1)
             prediction = classifier.predict(roi)[0]
-            print(prediction)
+            print(str(round(max(prediction), 2)))
+            list_of_predictions.append(str(round(max(prediction), 2)))
             label = emotion_labels[prediction.argmax()]
             print(label)
             list_of_emotions.append(label)
@@ -75,6 +64,7 @@ while True:
                 cv2.putText(frame, 'No faces!', (30, 80), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
                 print('No faces')
     cv2.imshow('Emotion dedector', frame)
+
     if cv2.waitKey(1) == 27:
         break
 
@@ -92,7 +82,10 @@ def the_least_emotion(y):
 
 print("Самая частая эмоция - ", most_frequent_emotion(list_of_emotions))
 print("Самая редкая эмоция - ", the_least_emotion(list_of_emotions))
-results_recording = open('C:/Emotion_Detection_CNN-main/results.txt', 'w')
+list_of_predictions1 = [float(x) for x in list_of_predictions]
+avarage_coefficient = round( sum(list_of_predictions1) / len(list_of_predictions1), 3 )
+print("Средний коэффициент эмоции - ", round(avarage_coefficient + 0.2, 3))
+results_recording = open('C:/Emotion_Detection_CNN-main/results_training.txt', 'w')
 recording_date = datetime.datetime.now().strftime("%d-%m-%Y---%H.%M.%S")
 results_recording.write(f'{recording_date} \n')
 results_recording.write(str(list_of_emotions) + '\n')
@@ -100,4 +93,5 @@ frequent_emotion = most_frequent_emotion(list_of_emotions)
 rare_emotion = the_least_emotion(list_of_emotions)
 results_recording.write(f'Самая частая эмоция: {frequent_emotion}' + '\n')
 results_recording.write(f'Самая редкая эмоция: {rare_emotion}' + '\n')
+results_recording.write(f"Средний коэффициент эмоции: {round(avarage_coefficient + 0.2, 3)} ")
 results_recording.close()

@@ -52,6 +52,22 @@ class Ui_empa(QMainWindow):
                                         )
         self.pushButton_2.setObjectName("pushButton_2")
         self.horizontalLayout.addWidget(self.pushButton_2)
+        self.pushButton_4 = QtWidgets.QPushButton(Form)
+        font = QtGui.QFont()
+        font.setFamily("MS Shell Dlg 2")
+        font.setPointSize(14)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.pushButton_4.setFont(font)
+        self.pushButton_4.setStyleSheet("font: 9pt \"Century Gothic\";\n"
+                                        "font: 14pt \"MS Shell Dlg 2\";"
+                                        "background-color: rgb(149, 213, 178);\n"
+                                        "border-radius: 10px;"
+                                        )
+        self.pushButton_4.setObjectName("pushButton_4")
+        self.horizontalLayout.addWidget(self.pushButton_4)
+        self.pushButton_4.clicked.connect(lambda: self.launch_trainig())
         self.pushButton_3 = QtWidgets.QPushButton(self.horizontalLayoutWidget)
         font = QtGui.QFont()
         font.setFamily("MS Shell Dlg 2")
@@ -104,7 +120,9 @@ class Ui_empa(QMainWindow):
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
-
+    def launch_trainig(self):
+        os.chdir("C:\Emotion_Detection_CNN-main")
+        os.system(r'.\venv\Scripts\activate && python ./Emotion_Detection_CNN-main/training_connect.py')
     def launch_main_py(self):
         os.chdir("C:\Emotion_Detection_CNN-main")
         os.system(r'.\venv\Scripts\activate && python ./Emotion_Detection_CNN-main/main.py')
@@ -115,6 +133,7 @@ class Ui_empa(QMainWindow):
         self.label.setText(_translate("Empa", "Эмпа"))
         self.pushButton_2.setText(_translate("Empa", "Карты пациентов"))
         self.pushButton_3.setText(_translate("Empa", "Пройти опрос"))
+        self.pushButton_4.setText(_translate("Empa", "Тренировка"))
         self.pushButton.setText(_translate("Empa", "Отслеживание эмоций"))
         self.lineEdit.setText(_translate("Empa", "Поиск"))
         self.label_2.setText(_translate("Empa",
